@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     tools {
-        jdk 'JDK'          // ✅ Make sure this matches Jenkins config
+        jdk 'JDK11'          // ✅ Make sure this matches Jenkins config
         // No need to define Gradle if using wrapper (recommended)
     }
 
