@@ -1,20 +1,27 @@
-apply plugin: 'java'
-apply plugin: 'maven'
+plugins {
+    id 'java'
+    id 'application'        // needed for running your main class
+    id 'maven-publish'      // replaces old 'maven' plugin
+}
 
 group = 'com.example1'
 version = '1.0-SNAPSHOT'
 
-description = """MyMavenToGradle"""
+description = 'MyMavenToGradle'
 
-sourceCompatibility = 1.6
-targetCompatibility = 1.6
-
-
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
 
 repositories {
-        
-     maven { url "https://repo.maven.apache.org/maven2" }
+    mavenCentral()
 }
+
 dependencies {
-    testCompile group: 'junit', name: 'junit', version:'3.8.1'
+    testImplementation 'junit:junit:4.13.2'
+}
+
+application {
+    mainClass = 'com.example.App'
 }
