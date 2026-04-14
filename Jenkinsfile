@@ -1,48 +1,61 @@
 pipeline {
-    agent any  // Use any available agent
+    agent any
 
     tools {
-        gradle 'Gradle'  // Ensure this matches the name configured in Jenkins
-        jdk 'JDK11'
+        jdk 'JDK'          // ✅ Make sure this matches Jenkins config
+        // No need to define Gradle if using wrapper (recommended)
     }
+
+    environment {
+        CHROME_BIN = '/usr/bin/google-chrome'
+    }
+
     stages {
+
         stage('Checkout') {
             steps {
-                git branch: 'master', url: 'https://github.com/harishbitcse82/MyGradleApp01.git'
+                git branch: 'main', url: 'https://github.com/VishnuPrakash1007/MyMavenToGradle.git'
+            }
+        }
+
+        stage('Grant Permission') {
+            steps {
+                sh 'chmod +x gradlew'
+            }
+        }
+
+        stage('Install Chrome Dependencies') {
+            steps {
+                sh '''
+                echo "Checking Chrome..."
+                google-chrome --version || true
+
+                echo "Installing dependencies..."
+                sudo apt-get update
+                sudo apt-get install -y libxss1 libappindicator1 libindicator7 fonts-liberation libnss3 lsb-release xdg-utils
+                '''
             }
         }
 
         stage('Build') {
             steps {
-                sh 'gradle build'  // Run Gradle build
+                sh './gradlew clean build -x test'
             }
         }
 
-        stage('Test') {
+        stage('Run Automation') {
             steps {
-                sh 'gradle test'  // Run unit tests
+                sh './gradlew run'
             }
         }
-
-        
-        
-       
-        stage('Run Application') {
-            steps {
-                // Start the JAR application
-                sh 'gradle run'
-            }
-        }
-
-        
     }
 
     post {
         success {
-            echo 'Build and deployment successful!'
+            echo '✅ Build SUCCESS'
         }
         failure {
-            echo 'Build failed!'
+            echo '❌ Build FAILED'
         }
     }
 }
